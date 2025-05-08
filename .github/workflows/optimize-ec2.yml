@@ -1,0 +1,98 @@
+name: EC2 Resize Automation
+
+on:
+
+  workflow_dispatch:
+
+    inputs:
+
+      aws_access_key_id:
+
+        description: "AWS Access Key ID"
+
+        required: true
+
+        type: string
+
+      aws_secret_access_key:
+
+        description: "AWS Secret Access Key"
+
+        required: true
+
+        type: string
+
+      aws_region:
+
+        description: "AWS Region (e.g., us-east-1)"
+
+        required: true
+
+        type: string
+
+      instance_input:
+
+        description: "Format: i-1234:t3.medium,i-5678:t3.large"
+
+        required: true
+
+        type: string
+
+      change_number:
+
+        description: "Change number for tagging and logging"
+
+        required: true
+
+        type: string
+
+jobs:
+
+  resize-ec2:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+
+        uses: actions/setup-python@v4
+
+        with:
+
+          python-version: '3.11'
+
+      - name: Install dependencies
+
+        run: pip install boto3
+
+      - name: Run EC2 Resize Script
+
+        env:
+
+          AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+
+          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+
+          AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
+
+          INSTANCE_INPUT: ${{ inputs.instance_input }}
+
+          CHANGE_NUMBER: ${{ inputs.change_number }}
+
+        run: python ec2_resize.py
+
+      - name: Upload Resize Log
+
+        uses: actions/upload-artifact@v3
+
+        with:
+
+          name: ec2-resize-log-${{ inputs.change_number }}
+
+          path: ${{ inputs.change_number }}.log
+ 
