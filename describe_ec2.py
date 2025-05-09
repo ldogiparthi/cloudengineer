@@ -1,5 +1,6 @@
 import boto3
 import os
+import sys
 
 def describe_instance(instance_id):
     ec2 = boto3.client(
@@ -24,5 +25,9 @@ def describe_instance(instance_id):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    instance_id = input("Please enter the instance ID: ")
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <instance_id>")
+        sys.exit(1)
+    
+    instance_id = sys.argv[1]
     describe_instance(instance_id)
