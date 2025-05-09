@@ -2,6 +2,19 @@ name: Describe EC2 Instance
 
 on:
   workflow_dispatch:
+    inputs:
+      AWS_ACCESS_KEY_ID:
+        description: 'AWS Access Key ID'
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: 'AWS Secret Access Key'
+        required: true
+      AWS_SESSION_TOKEN:
+        description: 'AWS Session Token'
+        required: true
+      INSTANCE_ID:
+        description: 'EC2 Instance ID'
+        required: true
 
 jobs:
   describe-instance:
@@ -23,8 +36,8 @@ jobs:
 
     - name: Run script
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ github.event.inputs.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ github.event.inputs.AWS_SESSION_TOKEN }}
       run: |
-        python describe_ec2.py
+        python script.py ${{ github.event.inputs.INSTANCE_ID }}
