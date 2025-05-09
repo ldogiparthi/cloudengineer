@@ -96,7 +96,7 @@ for instance_id, new_type in instance_map.items():
 
         log(f"Created snapshot {snapshot['SnapshotId']} for volume {vol_id}")
 
-    # Monitor snapshot progress every 5 minutes
+    # Monitor snapshot progress every 2 minutes
 
     completed = set()
 
@@ -124,7 +124,7 @@ for instance_id, new_type in instance_map.items():
 
             log("Waiting 5 minutes before next snapshot check...")
 
-            time.sleep(300)
+            time.sleep(120)
 
     log("All snapshots completed.")
 
