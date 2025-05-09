@@ -21,8 +21,8 @@ on:
         required: true
 
         type: string
-        
-      aws_session _token:
+
+      aws_session_token:
 
         description: "AWS Session Token"
 
@@ -40,7 +40,7 @@ on:
 
       instance_input:
 
-        description: "Format: i-1234:t3.medium,i-5678:t3.large"
+        description: "Format: i-1234abcd:t3.medium,i-5678efgh:t3.large"
 
         required: true
 
@@ -48,7 +48,7 @@ on:
 
       change_number:
 
-        description: "Change number for tagging and logging"
+        description: "Change number (e.g., CHG-001234)"
 
         required: true
 
@@ -62,7 +62,7 @@ jobs:
 
     steps:
 
-      - name: Checkout code
+      - name: Checkout repository
 
         uses: actions/checkout@v3
 
@@ -74,9 +74,23 @@ jobs:
 
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
 
         run: pip install boto3
+
+      - name: Debug input environment
+
+        run: |
+
+          echo "INSTANCE_INPUT: $INSTANCE_INPUT"
+
+          echo "CHANGE_NUMBER: $CHANGE_NUMBER"
+
+        env:
+
+          INSTANCE_INPUT: ${{ inputs.instance_input }}
+
+          CHANGE_NUMBER: ${{ inputs.change_number }}
 
       - name: Run EC2 Resize Script
 
@@ -86,7 +100,7 @@ jobs:
 
           AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
 
-          AWS_SESSION_TOKEN: ${{inputs.aws_session_token }}
+          AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
 
           AWS_DEFAULT_REGION: ${{ inputs.aws_region }}
 
@@ -96,7 +110,13 @@ jobs:
 
         run: python optimize-ec2.py
 
+      - name: List log files (debug)
+
+        run: ls -lh
+
       - name: Upload Resize Log
+
+        if: always()
 
         uses: actions/upload-artifact@v3
 
