@@ -84,7 +84,7 @@ jobs:
 
           CHANGE_NUMBER: ${{ inputs.change_number }}
 
-        run: python ec2_resize.py
+        run: python optimize-ec2.py
 
       - name: Upload Resize Log
 
