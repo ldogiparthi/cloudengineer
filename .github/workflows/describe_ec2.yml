@@ -40,4 +40,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
         AWS_SESSION_TOKEN: ${{ github.event.inputs.AWS_SESSION_TOKEN }}
       run: |
-        python script.py ${{ github.event.inputs.INSTANCE_ID }}
+        python describe_ec2.py ${{ github.event.inputs.INSTANCE_ID }}
